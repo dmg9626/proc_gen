@@ -1,2 +1,4 @@
 # Visual Studio stuff
 .vs/
+Debug/
+*/Debug/
