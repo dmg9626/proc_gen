@@ -31,13 +31,22 @@ void CreateMapXML()
     ofstream f("my_map.xml");
     XmlStream xml(f);
 
+    // Create root tag <map>
     xml << prolog()
-        << tag("map") 
-            << attr("version") << "A4" 
-            << attr("orientation") << "orthogonal"
-            << attr("width") << 16 << attr("height") << 16 
-            << attr("tilewidth") << 32 << attr("tileheight") << 32
-    << tag("subtag") << endtag("subtag");
+        << tag("map")
+        << attr("version") << "A4"
+        << attr("orientation") << "orthogonal"
+        << attr("width") << 16 << attr("height") << 16
+        << attr("tilewidth") << 32 << attr("tileheight") << 32;
+    
+    // <properties> tag with map metadata
+    xml << tag("properties")
+        << tag("property") << attr("name") << "name" << attr("value") << "My Map" << endtag("properties");
+
+    // <tileset> tag with link to spritesheet (graphics.png)
+    xml << tag("tileset") << attr("firstgid") << 1 << attr("name") << "graphics" << attr("tilewidth") << 32 << attr("tileheight") << 32
+        << tag("image") << attr("source") << "graphics.png" << attr("width") << 320 << attr("height") << 1184 << endtag()
+    << endtag();
 }
 
 void SampleXML()
