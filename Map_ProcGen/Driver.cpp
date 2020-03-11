@@ -8,7 +8,10 @@ using namespace	xmlw;
 
 int SIZE = 2;
 
-void CreateMapXML();
+int LAND_TILE = 31;
+int WATER_TILE = 21;
+
+void CreateMapXML(int width, int height, int tilewidth, int tileheight);
 
 int main()
 {
@@ -23,30 +26,43 @@ int main()
         printf("\n");
     }*/
 
-    CreateMapXML();
+    CreateMapXML(16, 16, 32, 32);
 }
 
-void CreateMapXML()
+void CreateMapXML(int width, int height, int tilewidth, int tileheight)
 {
     ofstream f("my_map.xml");
     XmlStream xml(f);
 
-    // Create root tag <map>
+    // <map> root tag (endtag() called by destructor)
     xml << prolog()
         << tag("map")
         << attr("version") << "A4"
         << attr("orientation") << "orthogonal"
-        << attr("width") << 16 << attr("height") << 16
-        << attr("tilewidth") << 32 << attr("tileheight") << 32;
+        << attr("width") << width << attr("height") << height
+        << attr("tilewidth") << tilewidth << attr("tileheight") << tileheight;
     
     // <properties> tag with map metadata
     xml << tag("properties")
-        << tag("property") << attr("name") << "name" << attr("value") << "My Map" << endtag("properties");
+        << tag("property") << attr("name") << "name" << attr("value") << "My Map" 
+    << endtag("properties");
 
     // <tileset> tag with link to spritesheet (graphics.png)
-    xml << tag("tileset") << attr("firstgid") << 1 << attr("name") << "graphics" << attr("tilewidth") << 32 << attr("tileheight") << 32
-        << tag("image") << attr("source") << "graphics.png" << attr("width") << 320 << attr("height") << 1184 << endtag()
-    << endtag();
+    xml << tag("tileset") << attr("firstgid") << 1 << attr("name") << "graphics" << attr("tilewidth") << tilewidth << attr("tileheight") << tileheight
+        << tag("image") << attr("source") << "data/graphics.png" << attr("width") << 320 << attr("height") << 1184
+    << endtag("tileset");
+
+    // <layer> -> <data> tag holding tile data
+    xml << tag("layer") << attr("name") << "Terrain Layer" << attr("width") << width << attr("height") << height;
+    xml << tag("data");
+
+    // Populate <data> with tiles
+    for (int i = 0; i < width * height; i++) 
+    {
+        // TODO: read values from a heightmap and place water/land accordingly
+        xml << tag("tile") << attr("gid") << LAND_TILE << endtag();
+    }
+    xml << endtag("layer");
 }
 
 void SampleXML()
