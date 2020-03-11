@@ -2,3 +2,6 @@
 .vs/
 Debug/
 */Debug/
+
+# Ignore .xml map files
+*.xml
