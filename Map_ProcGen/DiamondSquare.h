@@ -32,6 +32,7 @@ private:
 
 	/* Returns random float value between 0 and 1 (inclusive) */
 	float rand01() {
+		// TODO: rewrite this - the first value returned is always the same
 		return static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 	}
 	

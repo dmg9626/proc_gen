@@ -7,12 +7,14 @@
 using namespace std;
 using namespace	xmlw;
 
-int N = 3;
+int N = 4;
 
 int LAND_TILE = 31;
 int WATER_TILE = 21;
 
-void CreateMapXML(int width, int height, int tilewidth, int tileheight);
+float WATER_LEVEL = .25f;
+
+void CreateMapXML(int width, int height, int tilewidth, int tileheight, float** heightmap);
 
 int main()
 {
@@ -23,12 +25,14 @@ int main()
     float** heightmap = diamondSquare.GenerateHeightMap(N);
 
     int size = pow(2, N) + 1;
-    //diamondSquare.PrintHeightMap(heightmap, size);
 
-    //CreateMapXML(16, 16, 32, 32);
+    /*printf("\n\nFINAL MAP\n\n");
+    diamondSquare.PrintHeightMap(heightmap, size);*/
+
+    CreateMapXML(17, 17, 32, 32, heightmap);
 }
 
-void CreateMapXML(int width, int height, int tilewidth, int tileheight)
+void CreateMapXML(int width, int height, int tilewidth, int tileheight, float** heightmap)
 {
     ofstream f("my_map.xml");
     XmlStream xml(f);
@@ -56,10 +60,24 @@ void CreateMapXML(int width, int height, int tilewidth, int tileheight)
     xml << tag("data");
 
     // Populate <data> with tiles
-    for (int i = 0; i < width * height; i++) 
+    for (int y = 0; y < height; y++) 
     {
-        // TODO: read values from a heightmap and place water/land accordingly
-        xml << tag("tile") << attr("gid") << LAND_TILE << endtag();
+        float* row = heightmap[y];
+        for (int x = 0; x < width; x++) 
+        {
+            // Get value at tile
+            float value = row[x];
+            
+            // Determine whether tile is land/water based on height relative to water level
+            int tile = -1;
+            if (value >= WATER_LEVEL) 
+                tile = LAND_TILE;
+            else 
+                tile = WATER_TILE;
+
+            // Place land/water tile accordingly
+            xml << tag("tile") << attr("gid") << tile << endtag();
+        }
     }
     xml << endtag("layer");
 }
