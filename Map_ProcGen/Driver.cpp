@@ -6,7 +6,7 @@
 using namespace std;
 using namespace	xmlw;
 
-int SIZE = 2;
+int SIZE = 1;
 
 int LAND_TILE = 31;
 int WATER_TILE = 21;
@@ -15,10 +15,10 @@ void CreateMapXML(int width, int height, int tilewidth, int tileheight);
 
 int main()
 {
-    /*DiamondSquare diamondSquare;
+    DiamondSquare diamondSquare;
     float** heightmap = diamondSquare.GenerateHeightMap(SIZE);
 
-    int n = pow(2, SIZE);
+    /*int n = pow(2, SIZE);
     for (int i = 0; i < n + 1; i++) {
         for (int j = 0; j < n + 1; j++) {
             printf("%f ", heightmap[i][j]);
@@ -26,7 +26,7 @@ int main()
         printf("\n");
     }*/
 
-    CreateMapXML(16, 16, 32, 32);
+    //CreateMapXML(16, 16, 32, 32);
 }
 
 void CreateMapXML(int width, int height, int tilewidth, int tileheight)
