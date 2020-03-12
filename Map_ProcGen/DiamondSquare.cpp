@@ -19,18 +19,27 @@ float** DiamondSquare::GenerateHeightMap(const int n)
 	bottomRow[0] = rand01();
 	bottomRow[size - 1] = rand01();
 	
+	printf("STARTING MAP\n\n");
+	PrintHeightMap(rows, size);
+	printf("\n\n");
+	
 	// Noise applied to each diamond-square operation (halved after each iteration)
-	float noise = .5f;
+	float noise = .25f;
 	for (int i = 0; i < n; i++) {
+
 		// Populate values across map in increasingly granular steps
 		int step = pow(2, n-i) / 2;
-		printf("Step size: %d\n", step);
-
-		// SQUARE
-		Square(size, step, rows, noise);
+		printf("Step size: %d\nNoise: %f\n\n", step, noise);
 
 		// DIAMOND
+		printf("DIAMOND\n\n");
 		Diamond(size, step, rows, noise);
+		PrintHeightMap(rows, size);
+
+		// SQUARE
+		printf("SQUARE\n\n");
+		Square(size, step, rows, noise);
+		PrintHeightMap(rows, size);
 
 		// Halve noise and repeat
 		noise /= 2;
@@ -46,7 +55,6 @@ void DiamondSquare::Diamond(const int size, const int step, float** heightmap, c
 	for (int y = step; y < size-1; y += step) 
 	{
 		// Iterate over items in row
-		float* row = heightmap[y];
 		for (int x = step; x < size - 1; x += step) 
 		{
 			// Get average of diagonally-neighboring values at step distance
@@ -56,18 +64,52 @@ void DiamondSquare::Diamond(const int size, const int step, float** heightmap, c
 			float bottomRight = heightmap[y + step][x + step];
 
 			float avg = (topLeft + topRight + bottomLeft + bottomRight) / 4;
-			//printf("neighbors: %.2f, %.2f, %.2f, %.2f\n", topLeft, topRight, bottomLeft, bottomRight);
-			//printf("average: %.2f\n", avg);
+			printf("neighbors: %.2f, %.2f, %.2f, %.2f\n", topLeft, topRight, bottomLeft, bottomRight);
+			printf("average: %.2f\n", avg);
 
-			// Set tile value to avg + noise
-			row[x] = avg + (avg * noise);
+			// Set tile value to avg + random noise
+			float rand_noise = (rand01() / 2) * noise;
+			heightmap[y][x] = avg + (avg * rand_noise);
 		}
 	}
 }
 
 void DiamondSquare::Square(const int size, const int step, float** heightmap, const float noise)
 {
+	// Iterate over rows
+	for (int y = 0; y < size; y += step) 
+	{
+		for (int x = 0; x < size; x += step) 
+		{
+			float topNeighbor = 0, bottomNeighbor = 0, leftNeighbor = 0, rightNeighbor = 0;
 
+			// Track number of neighbors while checking their values
+			int neighboutCount = 0;
+			if (x + step < size) {
+				rightNeighbor = heightmap[y][x + step];
+				neighboutCount++;
+			}
+			if (x - step >= 0) {
+				leftNeighbor = heightmap[y][x - step];
+				neighboutCount++;
+			}
+			if (y + step < size) {
+				bottomNeighbor = heightmap[y + step][x];
+				neighboutCount++;
+			}
+			if (y - step >= 0) {
+				topNeighbor = heightmap[y - step][x];
+				neighboutCount++;
+			}
+
+			// Calculate average
+			float avg = (topNeighbor + bottomNeighbor + leftNeighbor + rightNeighbor) / neighboutCount;
+
+			// Set tile value to avg + random noise
+			float rand_noise = (rand01() / 2) * noise;
+			heightmap[y][x] = avg + (avg * rand_noise);
+		}
+	}
 }
 
 float** DiamondSquare::InitializeFloatArray(const int size)

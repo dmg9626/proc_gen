@@ -1,12 +1,13 @@
 #include <iostream>
-#include "DiamondSquare.h"
 #include <fstream>
+#include <time.h>
+#include "DiamondSquare.h"
 #include "xmlwriter.h"
 
 using namespace std;
 using namespace	xmlw;
 
-int N = 2;
+int N = 3;
 
 int LAND_TILE = 31;
 int WATER_TILE = 21;
@@ -15,16 +16,14 @@ void CreateMapXML(int width, int height, int tilewidth, int tileheight);
 
 int main()
 {
+    // Set random seed
+    srand(time(0));
+
     DiamondSquare diamondSquare;
     float** heightmap = diamondSquare.GenerateHeightMap(N);
 
     int size = pow(2, N) + 1;
-    for (int i = 0; i < size; i++) {
-        for (int j = 0; j < size; j++) {
-            printf("%.2f\t", heightmap[i][j]);
-        }
-        printf("\n\n");
-    }
+    //diamondSquare.PrintHeightMap(heightmap, size);
 
     //CreateMapXML(16, 16, 32, 32);
 }
