@@ -13,4 +13,7 @@ private:
 	
 	/* Performs square step of algorithm */
 	void Square(int size, int step, float** heightmap);
+
+	/* Returns a properly-sized float array of zeroes */
+	float** InitializeFloatArray(int n);
 };
