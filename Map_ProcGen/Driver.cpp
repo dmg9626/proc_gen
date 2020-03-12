@@ -3,14 +3,12 @@
 #include <time.h>
 #include "DiamondSquare.h"
 #include "xmlwriter.h"
+#include "TileMap.h"
 
 using namespace std;
 using namespace	xmlw;
 
 int N = 4;
-
-int LAND_TILE = 31;
-int WATER_TILE = 21;
 
 float WATER_LEVEL = .25f;
 
@@ -28,6 +26,8 @@ int main()
 
     /*printf("\n\nFINAL MAP\n\n");
     diamondSquare.PrintHeightMap(heightmap, size);*/
+    TileMap* tileMap = new TileMap(heightmap, size, WATER_LEVEL);
+    tileMap->Print();
 
     CreateMapXML(17, 17, 32, 32, heightmap);
 }
