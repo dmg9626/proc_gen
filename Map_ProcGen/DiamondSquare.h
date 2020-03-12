@@ -25,7 +25,7 @@ private:
 	void Square(const int size, const int step, float** heightmap, const float noise);
 
 	/* Returns average of neighbors of (x,y) within step-sized square on heightmap */
-	float GetSquareNeighbors(const int x, const int y, const int size, const int step, const float** heightmap);
+	float NeighborAverageSquare(const int x, const int y, const int size, const int step, float** heightmap);
 
 	/* Returns a properly-sized float array of zeroes */
 	float** InitializeFloatArray(const int size);
