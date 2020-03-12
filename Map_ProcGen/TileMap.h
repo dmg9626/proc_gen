@@ -2,9 +2,9 @@
 class TileMap
 {
 public:
-	TileMap(float** heightmap, int size, float water_level)
+	TileMap(float** heightmap, int _size, float water_level)
 	{
-		_size = size;
+		size = _size;
 		if (size < 1)
 			return;
 
@@ -24,17 +24,16 @@ public:
 	/* Returns tile at (x,y) */
 	int GetTileAt(int x, int y);
 
-	int Size() {
-		return _size;
-	}
+	/** Sets tile at (x,y) to given tile type */
+	void SetTileAt(int x, int y, int tile_type);
 
 	/** Prints text-representation of tilemap */
 	void Print();
 
+	int size;
 
 private:
 	int** _rows;
-	int _size;
 
 	void InitFromHeightmap(float** heightmap, float water_level);
 };
