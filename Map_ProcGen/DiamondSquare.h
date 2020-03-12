@@ -9,10 +9,10 @@ public:
 
 private:
 	/* Performs diamond step of algorithm */
-	void Diamond(const int size, const int step, float** heightmap);
+	void Diamond(const int size, const int step, float** heightmap, const float noise);
 	
 	/* Performs square step of algorithm */
-	void Square(const int size, const int step, float** heightmap);
+	void Square(const int size, const int step, float** heightmap, const float noise);
 
 	/* Returns a properly-sized float array of zeroes */
 	float** InitializeFloatArray(const int size);

@@ -19,27 +19,29 @@ float** DiamondSquare::GenerateHeightMap(const int n)
 	bottomRow[0] = rand01();
 	bottomRow[size - 1] = rand01();
 	
+	// Noise applied to each diamond-square operation (halved after each iteration)
+	float noise = .5f;
 	for (int i = 0; i < n; i++) {
 		// Populate values across map in increasingly granular steps
 		int step = pow(2, n-i) / 2;
 		printf("Step size: %d\n", step);
 
 		// SQUARE
-		Square(size, step, rows);
+		Square(size, step, rows, noise);
 
 		// DIAMOND
-		Diamond(size, step, rows);
+		Diamond(size, step, rows, noise);
+
+		// Halve noise and repeat
+		noise /= 2;
 	}
 
 	// Return generated heightmap array
 	return rows;
 }
 
-void DiamondSquare::Diamond(const int size, const int step, float** heightmap)
+void DiamondSquare::Diamond(const int size, const int step, float** heightmap, const float noise)
 {
-	// TODO: halve noise after each iteration
-	float noise = .1f;
-
 	// Iterate over rows
 	for (int y = step; y < size-1; y += step) 
 	{
@@ -63,7 +65,7 @@ void DiamondSquare::Diamond(const int size, const int step, float** heightmap)
 	}
 }
 
-void DiamondSquare::Square(const int size, const int step, float** heightmap)
+void DiamondSquare::Square(const int size, const int step, float** heightmap, const float noise)
 {
 
 }
