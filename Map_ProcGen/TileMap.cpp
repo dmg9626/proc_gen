@@ -11,6 +11,23 @@ void TileMap::SetTileAt(int x, int y, int tile_type)
 	_rows[y][x] = tile_type;
 }
 
+void TileMap::AllocateGrid(int _size)
+{
+	size = _size;
+	if (size < 1)
+		return;
+
+	// Allocate pointer array to hold each row
+	_rows = new int* [size];
+	for (int i = 0; i < size; i++) {
+		// Allocate each row with empty values
+		_rows[i] = new int[size];
+		for (int j = 0; j < size; j++) {
+			_rows[i][j] = -1;
+		}
+	}
+}
+
 void TileMap::InitFromHeightmap(float** heightmap, float water_level)
 {
 	for (int y = 0; y < size; y++) {

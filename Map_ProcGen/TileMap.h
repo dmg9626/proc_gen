@@ -2,18 +2,14 @@
 class TileMap
 {
 public:
+	TileMap(int _size)
+	{
+		AllocateGrid(_size);
+	}
+
 	TileMap(float** heightmap, int _size, float water_level)
 	{
-		size = _size;
-		if (size < 1)
-			return;
-
-		// Allocate pointer array to hold each row
-		_rows = new int* [size];
-		for (int i = 0; i < size; i++) {
-			// Allocate each row
-			_rows[i] = new int[size];
-		}
+		AllocateGrid(_size);
 
 		// Populate rows with tiles based on heightmap values
 		InitFromHeightmap(heightmap, water_level);
@@ -38,9 +34,12 @@ public:
 private:
 	int** _rows;
 
+	void AllocateGrid(int _size);
+
 	void InitFromHeightmap(float** heightmap, float water_level);
 };
 
 static int LAND_TILE = 31;
 static int WATER_TILE = 21;
 static int SAND_TILE = 41;
+static int TREE_TILE = 45;
