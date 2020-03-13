@@ -6,8 +6,10 @@ float** DiamondSquare::GenerateHeightMap(const int n, const int seed)
 	if (n <= 1)
 		return nullptr;
 
-	// Set random seed
+	// Set random seed and call it once so we get true randoms
 	srand(seed);
+	rand01();
+
 	// Initialize empty heightmap
 	int size = pow(2, n) + 1;
 	float** rows = InitializeFloatArray(size);
