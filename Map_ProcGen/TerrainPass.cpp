@@ -1,5 +1,23 @@
 #include "TerrainPass.h"
 #include <stdio.h>
+#include <cmath>
+
+
+
+float TerrainPass::CalculateWaterLevel(float** heightmap, int size, float waterRatio)
+{
+	// Find average altitude
+	float sum = 0;
+	for (int y = 0; y < size; y++) {
+		for (int x = 0; x < size; x++) {
+			sum += heightmap[y][x];
+		}
+	}
+	float avg = sum / pow(size, 2);
+
+	// Scale that by desired water ratio
+	return avg * waterRatio;
+}
 
 void TerrainPass::CleanUpPatches(TileMap* tilemap, int find_tile, int replace_tile)
 {

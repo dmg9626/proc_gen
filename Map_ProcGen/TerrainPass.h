@@ -3,6 +3,9 @@
 class TerrainPass
 {
 public:
+	
+	float CalculateWaterLevel(float** heightmap, int size, float waterRatio);
+
 	/* Finds any instances of find_tile without any neighbors of the same type and replaces them with replace_tile*/
 	void CleanUpPatches(TileMap* tilemap, int find_tile, int replace_tile);
 

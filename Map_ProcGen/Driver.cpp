@@ -17,7 +17,6 @@ float WATER_RATIO = .55f;
 
 void CreateMapXML(int width, int height, TileMap* tilemap);
 void CreateGameXML(int playerX, int playerY, TileMap* tilemap, string gameName);
-float CalculateWaterLevel(float** heightmap, int size, float waterRatio);
 
 int main()
 {
@@ -27,13 +26,13 @@ int main()
     int size = pow(2, N) + 1;
 
     // Calculate water level using average altitude of heightmap
-    float water_level = CalculateWaterLevel(heightmap, size, WATER_RATIO);
+    TerrainPass terrainPass;
+    float water_level = terrainPass.CalculateWaterLevel(heightmap, size, WATER_RATIO);
     
     // Create tilemap from heightmap values
     TileMap* tileMap = new TileMap(heightmap, size, water_level);
 
     // Clean up lone land/water patches around map
-    TerrainPass terrainPass;
     terrainPass.CleanUpPatches(tileMap, LAND_TILE, WATER_TILE);
     terrainPass.CleanUpPatches(tileMap, WATER_TILE, LAND_TILE);
 
@@ -46,27 +45,12 @@ int main()
     if (tileMap->FindTileByType(SAND_TILE, player_x, player_y)) {
         player_x *= TILE_SIZE;
         player_y *= TILE_SIZE;
-        printf("Player spawn position: %d,%d\n", player_x, player_y);
+        printf("\n\nPlayer spawn position: %d,%d\n", player_x, player_y);
     }
 
     // Write map/game data to xml
     CreateMapXML(size, size, tileMap);
     CreateGameXML(player_x, player_y, tileMap, "The Beach");
-}
-
-float CalculateWaterLevel(float** heightmap, int size, float waterRatio)
-{
-    // Find average altitude
-    float sum = 0;
-    for (int y = 0; y < size; y++) {
-        for (int x = 0; x < size; x++) {
-            sum += heightmap[y][x];
-        }
-    }
-    float avg = sum / pow(size, 2);
-
-    // Scale that by desired water ratio
-    return avg * waterRatio;
 }
 
 void CreateMapXML(int width, int height, TileMap* tilemap)
