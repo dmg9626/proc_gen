@@ -9,14 +9,14 @@ using namespace std;
 using namespace	xmlw;
 
 int N = 4;
-int SEED = 4;
+int SEED = 5556699;
 
 int TILE_SIZE = 32;
 
 float WATER_RATIO = .55f;
 float TREE_RATIO = .1f;
 
-void CreateMapXML(int width, int height, TileMap* tilemap);
+void CreateMapXML(int width, int height, TileMap * terrainLayer, TileMap* objectLayer);
 void CreateGameXML(int playerX, int playerY, TileMap* tilemap, string gameName);
 
 int main()
@@ -44,7 +44,6 @@ int main()
     // Create object layer with trees
     TileMap* objectLayer = new TileMap(size);
     terrainPass.PopulateTrees(terrainLayer, objectLayer, TREE_RATIO);
-    printf("\n\OBJECT LAYER\n");
     objectLayer->Print();
 
     // Find a sand tile on the map
@@ -56,11 +55,11 @@ int main()
     }
 
     // Write map/game data to xml
-    CreateMapXML(size, size, terrainLayer);
+    CreateMapXML(size, size, terrainLayer, objectLayer);
     CreateGameXML(player_x, player_y, terrainLayer, "The Beach");
 }
 
-void CreateMapXML(int width, int height, TileMap* tilemap)
+void CreateMapXML(int width, int height, TileMap * terrainLayer, TileMap* objectLayer)
 {
     ofstream f("my_map.xml");
     XmlStream xml(f);
@@ -91,7 +90,20 @@ void CreateMapXML(int width, int height, TileMap* tilemap)
     for (int y = 0; y < height; y++)  {
         for (int x = 0; x < width; x++)   {
             // Insert tile values from tilemap
-            xml << tag("tile") << attr("gid") << tilemap->GetTileAt(x, y) << endtag();
+            xml << tag("tile") << attr("gid") << terrainLayer->GetTileAt(x, y) << endtag();
+        }
+    }
+    xml << endtag("layer");
+
+    // <layer> -> <data> tag holding tile data
+    xml << tag("layer") << attr("name") << "Object Layer" << attr("width") << width << attr("height") << height;
+    xml << tag("data");
+
+    // Populate <data> with tiles
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            // Insert tile values from tilemap
+            xml << tag("tile") << attr("gid") << objectLayer->GetTileAt(x, y) << endtag();
         }
     }
     xml << endtag("layer");
