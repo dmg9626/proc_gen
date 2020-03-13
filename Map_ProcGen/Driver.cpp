@@ -13,7 +13,7 @@ int N = 4;
 
 float WATER_LEVEL = .25f;
 
-void CreateMapXML(int width, int height, int tilewidth, int tileheight, TileMap tilemap);
+void CreateMapXML(int width, int height, int tilewidth, int tileheight, TileMap* tilemap);
 
 int main()
 {
@@ -42,10 +42,10 @@ int main()
     terrainPass.CleanUpPatches(tileMap, WATER_TILE, LAND_TILE);
     tileMap->Print();
 
-    CreateMapXML(17, 17, 32, 32, *tileMap);
+    CreateMapXML(17, 17, 32, 32, tileMap);
 }
 
-void CreateMapXML(int width, int height, int tilewidth, int tileheight, TileMap tilemap)
+void CreateMapXML(int width, int height, int tilewidth, int tileheight, TileMap* tilemap)
 {
     ofstream f("my_map.xml");
     XmlStream xml(f);
@@ -76,7 +76,7 @@ void CreateMapXML(int width, int height, int tilewidth, int tileheight, TileMap 
     for (int y = 0; y < height; y++)  {
         for (int x = 0; x < width; x++)   {
             // Insert tile values from tilemap
-            xml << tag("tile") << attr("gid") << tilemap.GetTileAt(x, y) << endtag();
+            xml << tag("tile") << attr("gid") << tilemap->GetTileAt(x, y) << endtag();
         }
     }
     xml << endtag("layer");

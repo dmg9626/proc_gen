@@ -15,7 +15,7 @@ void TerrainPass::CleanUpPatches(TileMap* tilemap, int find_tile, int replace_ti
 				continue;
 
 			// If tile has no neighbors of same type, replace with replace_tile
-			if (!HasNeighborsOfType(x, y, *tilemap, find_tile)) {
+			if (!HasNeighborsOfType(x, y, tilemap, find_tile)) {
 				printf("Tile (%d, %d) has no neighboring tiles of type %d\n", x, y, find_tile);
 				tilemap->SetTileAt(x, y, replace_tile);
 			}
@@ -23,7 +23,7 @@ void TerrainPass::CleanUpPatches(TileMap* tilemap, int find_tile, int replace_ti
 	}
 }
 
-bool TerrainPass::HasNeighborsOfType(int x, int y, TileMap tilemap, int tile_type)
+bool TerrainPass::HasNeighborsOfType(int x, int y, TileMap *tilemap, int tile_type)
 {
 	if (x == 6 && y == 0) {
 		printf("flag\n");
@@ -31,33 +31,33 @@ bool TerrainPass::HasNeighborsOfType(int x, int y, TileMap tilemap, int tile_typ
 	// Left of tile
 	if (x > 0) {
 		// Left
-		if (tilemap.GetTileAt(x - 1, y) == tile_type)
+		if (tilemap->GetTileAt(x - 1, y) == tile_type)
 			return true;
 		// Upper left
-		if (y > 0 && tilemap.GetTileAt(x - 1, y - 1) == tile_type)
+		if (y > 0 && tilemap->GetTileAt(x - 1, y - 1) == tile_type)
 			return true;
 		// Lower left
-		if (y < tilemap.size - 1 && tilemap.GetTileAt(x - 1, y + 1) == tile_type)
+		if (y < tilemap->size - 1 && tilemap->GetTileAt(x - 1, y + 1) == tile_type)
 			return true;
 	}
 
 	// Right of tile
-	if (x < tilemap.size - 1) {
+	if (x < tilemap->size - 1) {
 		// Right
-		if (tilemap.GetTileAt(x + 1, y) == tile_type)
+		if (tilemap->GetTileAt(x + 1, y) == tile_type)
 			return true;
 		// Upper right
-		else if (y > 0 && tilemap.GetTileAt(x + 1, y - 1) == tile_type)
+		else if (y > 0 && tilemap->GetTileAt(x + 1, y - 1) == tile_type)
 			return true;
 		// Lower right
-		else if (y < tilemap.size - 1 && tilemap.GetTileAt(x + 1, y + 1) == tile_type)
+		else if (y < tilemap->size - 1 && tilemap->GetTileAt(x + 1, y + 1) == tile_type)
 			return true;
 	}
 
 	// Above/Below
-	if(y > 0 && tilemap.GetTileAt(x, y - 1) == tile_type)
+	if(y > 0 && tilemap->GetTileAt(x, y - 1) == tile_type)
 		return true;
-	if (y < tilemap.size - 1 && tilemap.GetTileAt(x, y + 1) == tile_type)
+	if (y < tilemap->size - 1 && tilemap->GetTileAt(x, y + 1) == tile_type)
 		return true;
 
 	else return false;
