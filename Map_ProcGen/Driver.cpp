@@ -4,6 +4,7 @@
 #include "DiamondSquare.h"
 #include "xmlwriter.h"
 #include "TileMap.h"
+#include "TerrainPass.h"
 
 using namespace std;
 using namespace	xmlw;
@@ -26,7 +27,19 @@ int main()
 
     /*printf("\n\nFINAL MAP\n\n");
     diamondSquare.PrintHeightMap(heightmap, size);*/
+    
+    // Create tilemap from heightmap values
     TileMap* tileMap = new TileMap(heightmap, size, WATER_LEVEL);
+    tileMap->Print();
+
+    // Clean up lone land/water patches around map
+    TerrainPass terrainPass;
+    printf("\n\nREMOVING LAND PATCHES\n\n");
+    terrainPass.CleanUpPatches(tileMap, LAND_TILE, WATER_TILE);
+    tileMap->Print();
+
+    printf("\n\nREMOVING WATER PATCHES\n\n");
+    terrainPass.CleanUpPatches(tileMap, WATER_TILE, LAND_TILE);
     tileMap->Print();
 
     CreateMapXML(17, 17, 32, 32, heightmap);
