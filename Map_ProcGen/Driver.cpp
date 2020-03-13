@@ -9,11 +9,14 @@ using namespace std;
 using namespace	xmlw;
 
 int N = 4;
-int SEED = 0;
+int SEED = 2;
+
+int TILE_SIZE = 32;
 
 float WATER_LEVEL = .25f;
 
-void CreateMapXML(int width, int height, int tilewidth, int tileheight, TileMap* tilemap);
+void CreateMapXML(int width, int height, TileMap* tilemap);
+void CreateGameXML(int playerX, int playerY, TileMap* tilemap, string gameName);
 
 int main()
 {
@@ -27,19 +30,19 @@ int main()
 
     // Clean up lone land/water patches around map
     TerrainPass terrainPass;
-    printf("\n\nREMOVING LAND PATCHES\n\n");
     terrainPass.CleanUpPatches(tileMap, LAND_TILE, WATER_TILE);
-    printf("\n\nREMOVING WATER PATCHES\n\n");
     terrainPass.CleanUpPatches(tileMap, WATER_TILE, LAND_TILE);
 
     // Change water-bordering land tiles to sand
     terrainPass.AddSand(tileMap);
     tileMap->Print();
 
-    CreateMapXML(size, size, 32, 32, tileMap);
+    // Write map/game data to xml
+    CreateMapXML(size, size, tileMap);
+    CreateGameXML(32, 32, tileMap, "The Beach");
 }
 
-void CreateMapXML(int width, int height, int tilewidth, int tileheight, TileMap* tilemap)
+void CreateMapXML(int width, int height, TileMap* tilemap)
 {
     ofstream f("my_map.xml");
     XmlStream xml(f);
@@ -50,7 +53,7 @@ void CreateMapXML(int width, int height, int tilewidth, int tileheight, TileMap*
         << attr("version") << "A4"
         << attr("orientation") << "orthogonal"
         << attr("width") << width << attr("height") << height
-        << attr("tilewidth") << tilewidth << attr("tileheight") << tileheight;
+        << attr("tilewidth") << TILE_SIZE << attr("tileheight") << TILE_SIZE;
     
     // <properties> tag with map metadata
     xml << tag("properties")
@@ -58,8 +61,8 @@ void CreateMapXML(int width, int height, int tilewidth, int tileheight, TileMap*
     << endtag("properties");
 
     // <tileset> tag with link to spritesheet (graphics.png)
-    xml << tag("tileset") << attr("firstgid") << 1 << attr("name") << "graphics" << attr("tilewidth") << tilewidth << attr("tileheight") << tileheight
-        << tag("image") << attr("source") << "data/graphics.png" << attr("width") << 320 << attr("height") << 1184
+    xml << tag("tileset") << attr("firstgid") << 1 << attr("name") << "graphics" << attr("tilewidth") << TILE_SIZE << attr("tileheight") << TILE_SIZE
+        << tag("image") << attr("source") << "graphics.png" << attr("width") << 320 << attr("height") << 1184
     << endtag("tileset");
 
     // <layer> -> <data> tag holding tile data
@@ -74,6 +77,71 @@ void CreateMapXML(int width, int height, int tilewidth, int tileheight, TileMap*
         }
     }
     xml << endtag("layer");
+}
+
+void CreateGameXML(int playerX, int playerY, TileMap* tilemap, string gameName)
+{
+    ofstream f("my_game.xml");
+    XmlStream xml(f);
+
+    // <A4Game> root tag (endtag() called by destructor)
+    xml << prolog()
+        << tag("A4Game")
+        << attr("name") << "example"
+        << attr("title") << gameName;
+
+    // <allowSaveGames>
+    xml << tag("allowSaveGames") << attr("value") << false << endtag();
+
+    // <story>
+    xml << tag("story") << tag("line") << chardata() << "You wake up on a beach..."
+    << endtag("story");
+
+    // <ending>
+    xml << tag("ending") << attr("id") << 1
+        << tag("line") << chardata() << "End of the game"
+    << endtag("ending");
+
+    // <tiles>
+    xml << tag("tiles") << attr("sourcewidth") << TILE_SIZE << attr("sourceheight") << TILE_SIZE << attr("targetwidth") << TILE_SIZE << attr("targetheight") << TILE_SIZE;
+
+    // <types>
+    xml << tag("types") << attr("file") << "graphics.png"
+        << chardata() <<
+        "\n0,0,1,0,1,0,0,0,0,0,\n""1,1,1,0,0,0,0,0,0,0,\n""4,0,1,1,1,0,0,0,0,0,\n""0,0,0,0,0,0,0,0,0,0,\n"
+        "0,1,1,1,2,3,1,1,1,0,\n""0,1,1,1,1,0,0,0,1,0,\n""0,0,0,1,0,0,1,0,1,0,\n""0,0,0,0,0,0,0,0,0,0,\n"
+        "0,0,0,0,0,0,1,1,1,1,\n""0,0,0,0,0,1,0,0,0,0,\n""0,0,0,0,0,1,0,0,0,0,\n""0,0,0,0,0,1,0,0,0,0,\n"
+        "0,0,0,0,0,1,0,0,0,0,\n""0,0,0,0,0,1,0,0,0,0,\n""0,0,0,0,0,0,0,1,0,0,\n""0,0,0,0,1,0,0,0,0,0,\n"
+        "0,0,0,0,0,0,0,0,0,0,\n""0,0,0,0,0,0,0,0,0,0,\n""0,0,0,0,0,0,0,0,0,0,\n""0,0,0,0,0,0,0,0,0,0,\n"
+        "0,0,0,0,0,0,0,0,0,0,\n""1,1,0,0,0,0,1,1,1,1,\n""1,1,0,0,0,0,1,1,1,1,\n""1,1,0,0,0,0,0,0,0,0,\n"
+        "1,1,0,0,0,0,0,0,0,0,\n""1,1,0,0,0,0,0,0,0,0,\n""1,1,0,0,0,0,0,0,0,0,\n""1,1,0,0,0,0,0,0,0,0,\n"
+        "1,1,0,0,0,0,0,0,0,0,\n""1,1,0,0,0,0,0,0,0,0,\n""1,1,0,0,0,0,0,0,0,0,\n""1,1,0,0,0,0,0,0,0,0,\n"
+        "1,1,0,0,0,0,0,0,0,0,\n""1,1,0,0,0,0,0,0,0,0,\n""1,1,0,0,0,0,0,0,0,0,\n""1,1,0,0,0,0,0,0,0,0,\n"
+        "1,1,0,0,0,0,0,0,0,0,\n" << endtag("types");
+
+    // <seeThrough>
+    xml << tag("seeThrough") << attr("file") << "graphics.png"
+        << chardata() <<
+        "\n0,0,0,0,0,0,0,0,0,0," "\n1,1,0,0,0,0,0,0,0,0," "\n0,0,0,0,0,0,0,0,0,0," "\n0,0,0,0,0,0,0,0,0,1,"
+        "\n0,0,0,0,0,0,0,0,0,1," "\n0,0,0,0,0,0,0,0,0,0," "\n0,0,0,0,0,0,1,0,1,0," "\n0,0,0,0,0,0,0,0,0,0,"
+        "\n0,0,0,0,0,0,0,0,0,0," "\n0,0,0,0,0,0,0,0,0,0," "\n0,0,0,0,0,0,0,0,0,0," "\n0,0,0,0,0,1,0,0,0,0,"
+        "\n0,0,0,0,0,0,0,0,0,0," "\n0,0,0,0,0,0,0,0,0,0," "\n0,0,0,0,0,0,0,0,0,0," "\n0,0,0,0,0,0,0,0,0,0,"
+        "\n0,0,0,0,0,0,0,0,0,0," "\n0,0,0,0,0,0,0,0,0,0," "\n0,0,0,0,0,0,0,0,0,0," "\n0,0,0,0,0,0,0,0,0,0,"
+        "\n0,0,0,0,0,0,0,0,0,0," "\n1,1,0,0,0,0,0,0,0,0," "\n1,1,0,0,0,0,0,0,0,0," "\n1,1,0,0,0,0,0,0,0,0,"
+        "\n1,1,0,0,0,0,0,0,0,0," "\n1,1,0,0,0,0,0,0,0,0," "\n1,1,0,0,0,0,0,0,0,0," "\n1,1,0,0,0,0,0,0,0,0,"
+        "\n1,1,0,0,0,0,0,0,0,0," "\n1,1,0,0,0,0,0,0,0,0," "\n1,1,0,0,0,0,0,0,0,0," "\n1,1,0,0,0,0,0,0,0,0,"
+        "\n1,1,0,0,0,0,0,0,0,0," "\n1,1,0,0,0,0,0,0,0,0," "\n1,1,0,0,0,0,0,0,0,0," "\n1,1,0,0,0,0,0,0,0,0,"
+        "\n1,1,0,0,0,0,0,0,0,0," 
+    << endtag("tiles");
+    
+    // <characteDefinition>
+    xml << tag("characterDefinition") << attr("file") << "players.xml" << endtag();
+
+    // <map>
+    xml << tag("map") << attr("file") << "my_map.xml" << endtag();
+
+    // <player>
+    xml << tag("player") << attr("class") << "Warrior" << attr("x") << playerX << attr("y") << playerY << attr("map") << 0 << endtag();
 }
 
 void SampleXML()
