@@ -24,8 +24,11 @@ public:
 	/* Returns tile at (x,y) */
 	int GetTileAt(int x, int y);
 
-	/** Sets tile at (x,y) to given tile type */
+	/* Sets tile at (x,y) to given tile type */
 	void SetTileAt(int x, int y, int tile_type);
+
+	/* Searches the map for a tile of given type and assigns coordinates to x and y. Returns true if matching tile found */
+	bool FindTileByType(int tile_type, int& x, int& y);
 
 	/** Prints text-representation of tilemap */
 	void Print();

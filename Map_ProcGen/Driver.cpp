@@ -9,7 +9,7 @@ using namespace std;
 using namespace	xmlw;
 
 int N = 4;
-int SEED = 2;
+int SEED = 8;
 
 int TILE_SIZE = 32;
 
@@ -37,9 +37,17 @@ int main()
     terrainPass.AddSand(tileMap);
     tileMap->Print();
 
+    // Find a sand tile on the map
+    int player_x, player_y;
+    if (tileMap->FindTileByType(SAND_TILE, player_x, player_y)) {
+        player_x *= TILE_SIZE;
+        player_y *= TILE_SIZE;
+        printf("Player spawn position: %d,%d\n", player_x, player_y);
+    }
+
     // Write map/game data to xml
     CreateMapXML(size, size, tileMap);
-    CreateGameXML(32, 32, tileMap, "The Beach");
+    CreateGameXML(player_x, player_y, tileMap, "The Beach");
 }
 
 void CreateMapXML(int width, int height, TileMap* tilemap)

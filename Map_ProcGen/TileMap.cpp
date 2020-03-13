@@ -26,6 +26,20 @@ void TileMap::InitFromHeightmap(float** heightmap, float water_level)
 	}
 }
 
+bool TileMap::FindTileByType(int tile_type, int& out_x, int& out_y)
+{
+	for (int y = 0; y < size; y++) {
+		for (int x = 0; x < size; x++) {
+			if (GetTileAt(x, y) == tile_type) {
+				out_x = x;
+				out_y = y;
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 
 void TileMap::Print()
 {
