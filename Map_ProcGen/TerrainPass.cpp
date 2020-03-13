@@ -31,7 +31,6 @@ void TerrainPass::CleanUpPatches(TileMap* tilemap, int find_tile, int replace_ti
 
 			// If tile has no neighbors of same type, replace with replace_tile
 			if (!HasNeighborsOfType(x, y, tilemap, find_tile)) {
-				printf("Tile (%d, %d) has no neighboring tiles of type %d\n", x, y, find_tile);
 				tilemap->SetTileAt(x, y, replace_tile);
 			}
 		}
@@ -40,9 +39,6 @@ void TerrainPass::CleanUpPatches(TileMap* tilemap, int find_tile, int replace_ti
 
 bool TerrainPass::HasNeighborsOfType(int x, int y, TileMap *tilemap, int tile_type)
 {
-	if (x == 6 && y == 0) {
-		printf("flag\n");
-	}
 	// Left of tile
 	if (x > 0) {
 		// Left

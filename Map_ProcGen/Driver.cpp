@@ -44,7 +44,6 @@ int main()
     // Create object layer with trees
     TileMap* objectLayer = new TileMap(size);
     terrainPass.PopulateTrees(terrainLayer, objectLayer, TREE_RATIO);
-    objectLayer->Print();
 
     // Find a sand tile on the map
     int player_x, player_y;

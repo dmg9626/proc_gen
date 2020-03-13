@@ -23,27 +23,15 @@ float** DiamondSquare::GenerateHeightMap(const int n, const int seed)
 	bottomRow[0] = rand01();
 	bottomRow[size - 1] = rand01();
 	
-	printf("STARTING MAP\n\n");
-	PrintHeightMap(rows, size);
-	printf("\n\n");
-	
 	// Noise applied to each diamond-square operation (halved after each iteration)
 	float noise = .25f;
-	for (int i = 0; i < n; i++) {
-
+	for (int i = 0; i < n; i++) 
+	{
 		// Populate values across map in increasingly granular steps
 		int step = pow(2, n-i) / 2;
-		printf("Step size: %d\nNoise: %f\n\n", step, noise);
 
-		// DIAMOND
-		//printf("DIAMOND\n\n");
 		Diamond(size, step, rows, noise);
-		//PrintHeightMap(rows, size);
-
-		// SQUARE
-		//printf("SQUARE\n\n");
 		Square(size, step, rows, noise);
-		//PrintHeightMap(rows, size);
 
 		// Halve noise and repeat
 		noise /= 2;
@@ -68,8 +56,6 @@ void DiamondSquare::Diamond(const int size, const int step, float** heightmap, c
 			float bottomRight = heightmap[y + step][x + step];
 
 			float avg = (topLeft + topRight + bottomLeft + bottomRight) / 4;
-			/*printf("neighbors: %.2f, %.2f, %.2f, %.2f\n", topLeft, topRight, bottomLeft, bottomRight);
-			printf("average: %.2f\n", avg);*/
 
 			// Set tile value to avg + random noise
 			float rand_noise = (rand01() / 2) * noise;
