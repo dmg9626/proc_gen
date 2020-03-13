@@ -9,14 +9,15 @@ using namespace std;
 using namespace	xmlw;
 
 int N = 4;
-int SEED = 8;
+int SEED = 4;
 
 int TILE_SIZE = 32;
 
-float WATER_LEVEL = .25f;
+float WATER_RATIO = .55f;
 
 void CreateMapXML(int width, int height, TileMap* tilemap);
 void CreateGameXML(int playerX, int playerY, TileMap* tilemap, string gameName);
+float CalculateWaterLevel(float** heightmap, int size, float waterRatio);
 
 int main()
 {
@@ -24,9 +25,12 @@ int main()
     DiamondSquare diamondSquare;
     float** heightmap = diamondSquare.GenerateHeightMap(N, SEED);
     int size = pow(2, N) + 1;
+
+    // Calculate water level using average altitude of heightmap
+    float water_level = CalculateWaterLevel(heightmap, size, WATER_RATIO);
     
     // Create tilemap from heightmap values
-    TileMap* tileMap = new TileMap(heightmap, size, WATER_LEVEL);
+    TileMap* tileMap = new TileMap(heightmap, size, water_level);
 
     // Clean up lone land/water patches around map
     TerrainPass terrainPass;
@@ -48,6 +52,21 @@ int main()
     // Write map/game data to xml
     CreateMapXML(size, size, tileMap);
     CreateGameXML(player_x, player_y, tileMap, "The Beach");
+}
+
+float CalculateWaterLevel(float** heightmap, int size, float waterRatio)
+{
+    // Find average altitude
+    float sum = 0;
+    for (int y = 0; y < size; y++) {
+        for (int x = 0; x < size; x++) {
+            sum += heightmap[y][x];
+        }
+    }
+    float avg = sum / pow(size, 2);
+
+    // Scale that by desired water ratio
+    return avg * waterRatio;
 }
 
 void CreateMapXML(int width, int height, TileMap* tilemap)
