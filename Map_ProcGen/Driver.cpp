@@ -8,8 +8,8 @@
 using namespace std;
 using namespace	xmlw;
 
-int N = 4;
-int SEED = 5556699;
+int N = 5;
+int SEED = 16;
 
 int TILE_SIZE = 32;
 
