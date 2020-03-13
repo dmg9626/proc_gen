@@ -14,6 +14,7 @@ int SEED = 4;
 int TILE_SIZE = 32;
 
 float WATER_RATIO = .55f;
+float TREE_RATIO = .1f;
 
 void CreateMapXML(int width, int height, TileMap* tilemap);
 void CreateGameXML(int playerX, int playerY, TileMap* tilemap, string gameName);
@@ -30,27 +31,33 @@ int main()
     float water_level = terrainPass.CalculateWaterLevel(heightmap, size, WATER_RATIO);
     
     // Create tilemap from heightmap values
-    TileMap* tileMap = new TileMap(heightmap, size, water_level);
+    TileMap* terrainLayer = new TileMap(heightmap, size, water_level);
 
     // Clean up lone land/water patches around map
-    terrainPass.CleanUpPatches(tileMap, LAND_TILE, WATER_TILE);
-    terrainPass.CleanUpPatches(tileMap, WATER_TILE, LAND_TILE);
+    terrainPass.CleanUpPatches(terrainLayer, LAND_TILE, WATER_TILE);
+    terrainPass.CleanUpPatches(terrainLayer, WATER_TILE, LAND_TILE);
 
     // Change water-bordering land tiles to sand
-    terrainPass.AddSand(tileMap);
-    tileMap->Print();
+    terrainPass.AddSand(terrainLayer);
+    terrainLayer->Print();
+
+    // Create object layer with trees
+    TileMap* objectLayer = new TileMap(size);
+    terrainPass.PopulateTrees(terrainLayer, objectLayer, TREE_RATIO);
+    printf("\n\OBJECT LAYER\n");
+    objectLayer->Print();
 
     // Find a sand tile on the map
     int player_x, player_y;
-    if (tileMap->FindTileByType(SAND_TILE, player_x, player_y)) {
+    if (terrainLayer->FindTileByType(SAND_TILE, player_x, player_y)) {
         player_x *= TILE_SIZE;
         player_y *= TILE_SIZE;
         printf("\n\nPlayer spawn position: %d,%d\n", player_x, player_y);
     }
 
     // Write map/game data to xml
-    CreateMapXML(size, size, tileMap);
-    CreateGameXML(player_x, player_y, tileMap, "The Beach");
+    CreateMapXML(size, size, terrainLayer);
+    CreateGameXML(player_x, player_y, terrainLayer, "The Beach");
 }
 
 void CreateMapXML(int width, int height, TileMap* tilemap)

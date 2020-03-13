@@ -1,8 +1,5 @@
 #include "TerrainPass.h"
 #include <stdio.h>
-#include <cmath>
-
-
 
 float TerrainPass::CalculateWaterLevel(float** heightmap, int size, float waterRatio)
 {
@@ -84,10 +81,8 @@ bool TerrainPass::HasNeighborsOfType(int x, int y, TileMap *tilemap, int tile_ty
 void TerrainPass::AddSand(TileMap* tilemap)
 {
 	// Iterate over each row
-	for (int y = 0; y < tilemap->size; y++)
-	{
-		for (int x = 0; x < tilemap->size; x++)
-		{
+	for (int y = 0; y < tilemap->size; y++) {
+		for (int x = 0; x < tilemap->size; x++) {
 			int tile = tilemap->GetTileAt(x, y);
 
 			// Skip if tile isn't specified type
@@ -97,6 +92,26 @@ void TerrainPass::AddSand(TileMap* tilemap)
 			// If land tile is bordering water, change it to sand
 			if (HasNeighborsOfType(x, y, tilemap, WATER_TILE)) {
 				tilemap->SetTileAt(x, y, SAND_TILE);
+			}
+		}
+	}
+}
+
+void TerrainPass::PopulateTrees(TileMap* terrainLayer, TileMap* objectLayer, float treeRatio)
+{
+	// Iterate over each tile in terrain layer
+	for (int y = 0; y < terrainLayer->size; y++) {
+		for (int x = 0; x < terrainLayer->size; x++) {
+			int tile = terrainLayer->GetTileAt(x, y);
+
+			// Skip if tile isn't specified type
+			if (tile != LAND_TILE)
+				continue;
+
+			// Randomly place trees on objectLayer based on treeRatio chance
+			float chance = rand01();
+			if (chance < treeRatio) {
+				objectLayer->SetTileAt(x, y, TREE_TILE);
 			}
 		}
 	}

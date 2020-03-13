@@ -39,7 +39,7 @@ private:
 	void InitFromHeightmap(float** heightmap, float water_level);
 };
 
-static int LAND_TILE = 31;
-static int WATER_TILE = 21;
-static int SAND_TILE = 41;
-static int TREE_TILE = 45;
+static const int LAND_TILE = 31;
+static const int WATER_TILE = 21;
+static const int SAND_TILE = 41;
+static const int TREE_TILE = 45;

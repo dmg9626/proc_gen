@@ -68,13 +68,25 @@ void TileMap::Print()
 	printf("\n");
 	for (int y = 0; y < size; y++) {
 		printf("%d\t", y);
-		for (int x = 0; x < size; x++) {
-			if (GetTileAt(x, y) == LAND_TILE)
+		for (int x = 0; x < size; x++) 
+		{
+			switch (GetTileAt(x, y)) {
+			case LAND_TILE:
 				printf("#");
-			else if (GetTileAt(x, y) == WATER_TILE)
+				break;
+			case WATER_TILE:
 				printf("~");
-			else if (GetTileAt(x, y) == SAND_TILE)
+				break;
+			case SAND_TILE:
 				printf(".");
+				break;
+			case TREE_TILE:
+				printf("^");
+				break;
+			default:
+				printf(" ");
+				break;
+			}
 		}
 		printf("\n");
 	}
