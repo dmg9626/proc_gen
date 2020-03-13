@@ -29,7 +29,14 @@ void TileMap::InitFromHeightmap(float** heightmap, float water_level)
 
 void TileMap::Print()
 {
+	// Print x labels on top
+	printf("\n\t");
+	for (int x = 0; x < 10; x++) {
+		printf("%d", x);
+	}
+	printf("\n");
 	for (int y = 0; y < size; y++) {
+		printf("%d\t", y);
 		for (int x = 0; x < size; x++) {
 			if (GetTileAt(x, y) == LAND_TILE)
 				printf("#");
@@ -37,5 +44,11 @@ void TileMap::Print()
 				printf("~");
 		}
 		printf("\n");
+	}
+
+	// Print x labels on bottom
+	printf("\t");
+	for (int x = 0; x < 10; x++) {
+		printf("%d", x);
 	}
 }
