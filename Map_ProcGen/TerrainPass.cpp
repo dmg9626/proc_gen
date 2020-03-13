@@ -62,3 +62,24 @@ bool TerrainPass::HasNeighborsOfType(int x, int y, TileMap *tilemap, int tile_ty
 
 	else return false;
 }
+
+void TerrainPass::AddSand(TileMap* tilemap)
+{
+	// Iterate over each row
+	for (int y = 0; y < tilemap->size; y++)
+	{
+		for (int x = 0; x < tilemap->size; x++)
+		{
+			int tile = tilemap->GetTileAt(x, y);
+
+			// Skip if tile isn't specified type
+			if (tile != LAND_TILE)
+				continue;
+
+			// If land tile is bordering water, change it to sand
+			if (HasNeighborsOfType(x, y, tilemap, WATER_TILE)) {
+				tilemap->SetTileAt(x, y, SAND_TILE);
+			}
+		}
+	}
+}

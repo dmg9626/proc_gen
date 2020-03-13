@@ -1,11 +1,13 @@
 #include <iostream>
 #include "DiamondSquare.h"
 
-float** DiamondSquare::GenerateHeightMap(const int n)
+float** DiamondSquare::GenerateHeightMap(const int n, const int seed)
 {
 	if (n <= 1)
 		return nullptr;
 
+	// Set random seed
+	srand(seed);
 	// Initialize empty heightmap
 	int size = pow(2, n) + 1;
 	float** rows = InitializeFloatArray(size);

@@ -5,7 +5,7 @@ class DiamondSquare
 {
 public:
 	/* Returns a 2D float array representing a heightmap of size 2^(n) + 1 */
-	float** GenerateHeightMap(const int n);
+	float** GenerateHeightMap(const int n, const int seed);
 
 	void PrintHeightMap(float** heightmap, const int size)
 	{

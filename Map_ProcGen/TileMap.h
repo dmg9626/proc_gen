@@ -40,3 +40,4 @@ private:
 
 static int LAND_TILE = 31;
 static int WATER_TILE = 21;
+static int SAND_TILE = 41;

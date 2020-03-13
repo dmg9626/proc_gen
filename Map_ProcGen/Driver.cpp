@@ -1,6 +1,5 @@
 #include <iostream>
 #include <fstream>
-#include <time.h>
 #include "DiamondSquare.h"
 #include "xmlwriter.h"
 #include "TileMap.h"
@@ -10,6 +9,7 @@ using namespace std;
 using namespace	xmlw;
 
 int N = 4;
+int SEED = 0;
 
 float WATER_LEVEL = .25f;
 
@@ -17,32 +17,26 @@ void CreateMapXML(int width, int height, int tilewidth, int tileheight, TileMap*
 
 int main()
 {
-    // Set random seed
-    srand(time(0));
 
     DiamondSquare diamondSquare;
-    float** heightmap = diamondSquare.GenerateHeightMap(N);
-
+    float** heightmap = diamondSquare.GenerateHeightMap(N, SEED);
     int size = pow(2, N) + 1;
-
-    /*printf("\n\nFINAL MAP\n\n");
-    diamondSquare.PrintHeightMap(heightmap, size);*/
     
     // Create tilemap from heightmap values
     TileMap* tileMap = new TileMap(heightmap, size, WATER_LEVEL);
-    tileMap->Print();
 
     // Clean up lone land/water patches around map
     TerrainPass terrainPass;
     printf("\n\nREMOVING LAND PATCHES\n\n");
     terrainPass.CleanUpPatches(tileMap, LAND_TILE, WATER_TILE);
-    tileMap->Print();
-
     printf("\n\nREMOVING WATER PATCHES\n\n");
     terrainPass.CleanUpPatches(tileMap, WATER_TILE, LAND_TILE);
+
+    // Change water-bordering land tiles to sand
+    terrainPass.AddSand(tileMap);
     tileMap->Print();
 
-    CreateMapXML(17, 17, 32, 32, tileMap);
+    CreateMapXML(size, size, 32, 32, tileMap);
 }
 
 void CreateMapXML(int width, int height, int tilewidth, int tileheight, TileMap* tilemap)

@@ -42,6 +42,8 @@ void TileMap::Print()
 				printf("#");
 			else if (GetTileAt(x, y) == WATER_TILE)
 				printf("~");
+			else if (GetTileAt(x, y) == SAND_TILE)
+				printf(".");
 		}
 		printf("\n");
 	}
