@@ -13,7 +13,7 @@ int N = 4;
 
 float WATER_LEVEL = .25f;
 
-void CreateMapXML(int width, int height, int tilewidth, int tileheight, float** heightmap);
+void CreateMapXML(int width, int height, int tilewidth, int tileheight, TileMap tilemap);
 
 int main()
 {
@@ -42,10 +42,10 @@ int main()
     terrainPass.CleanUpPatches(tileMap, WATER_TILE, LAND_TILE);
     tileMap->Print();
 
-    CreateMapXML(17, 17, 32, 32, heightmap);
+    CreateMapXML(17, 17, 32, 32, *tileMap);
 }
 
-void CreateMapXML(int width, int height, int tilewidth, int tileheight, float** heightmap)
+void CreateMapXML(int width, int height, int tilewidth, int tileheight, TileMap tilemap)
 {
     ofstream f("my_map.xml");
     XmlStream xml(f);
@@ -73,23 +73,10 @@ void CreateMapXML(int width, int height, int tilewidth, int tileheight, float** 
     xml << tag("data");
 
     // Populate <data> with tiles
-    for (int y = 0; y < height; y++) 
-    {
-        float* row = heightmap[y];
-        for (int x = 0; x < width; x++) 
-        {
-            // Get value at tile
-            float value = row[x];
-            
-            // Determine whether tile is land/water based on height relative to water level
-            int tile = -1;
-            if (value >= WATER_LEVEL) 
-                tile = LAND_TILE;
-            else 
-                tile = WATER_TILE;
-
-            // Place land/water tile accordingly
-            xml << tag("tile") << attr("gid") << tile << endtag();
+    for (int y = 0; y < height; y++)  {
+        for (int x = 0; x < width; x++)   {
+            // Insert tile values from tilemap
+            xml << tag("tile") << attr("gid") << tilemap.GetTileAt(x, y) << endtag();
         }
     }
     xml << endtag("layer");
