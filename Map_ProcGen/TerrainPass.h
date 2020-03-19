@@ -1,6 +1,8 @@
 #pragma once
+#include <stdlib.h>
 #include <cmath>
 #include "TileMap.h"
+using namespace std;
 class TerrainPass
 {
 public:
