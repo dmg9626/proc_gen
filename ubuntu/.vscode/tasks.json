@@ -1,0 +1,44 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558 
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        // Build and run project
+        {
+            "type": "shell",
+            "label": "g++ build active file",
+            "command": "/usr/bin/g++",
+            "args": [
+                "-g",
+                "${workspaceFolder}/src/*.cpp",
+                "-o",
+                "${workspaceFolder}/out/Driver.o"
+            ],
+            "options": {
+                "cwd": "/usr/bin"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+
+            // Create out/ directory if doesn't exist
+            "dependsOn": [
+                "create build folder"
+            ]
+        },
+        
+        // Create out/ directory to store build files in
+        {
+            "type": "shell",
+            "label": "create build folder",
+            "command": "/usr/bin/mkdir",
+            "args": [
+                "out/"
+            ]
+        }
+    ]
+}
