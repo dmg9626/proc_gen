@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <ctime>
 #include "DiamondSquare.h"
 #include "xmlwriter.h"
 #include "TileMap.h"
@@ -8,19 +9,40 @@
 using namespace std;
 using namespace	xmlw;
 
+// Determines size of map
 int N = 5;
-int SEED = 16;
 
+// Seed used when none provided in args
+int DEFAULT_SEED = time(0);
+
+// Pixel size of tiles found in graphics sprite sheet
 int TILE_SIZE = 32;
 
+// Used to calculate water level after generating heightmap
 float WATER_RATIO = .55f;
+
+// Frequency of trees populated in map
 float TREE_RATIO = .1f;
 
 void CreateMapXML(int width, int height, TileMap * terrainLayer, TileMap* objectLayer);
 void CreateGameXML(int playerX, int playerY, TileMap* tilemap, string gameName);
 
-int main()
+int main(int argc, char *argv[])
 {
+    // Get seed from input, or use random seed if none provided
+    int SEED;
+    if(argc > 1) {
+        try {
+            SEED = std::stoi(argv[1]);
+        } catch (std::exception const &e) {
+            SEED = DEFAULT_SEED;
+        }
+    }
+    else {
+        SEED = DEFAULT_SEED;
+    }
+    printf("Seed: %d\n", SEED);
+
 
     DiamondSquare diamondSquare;
     float** heightmap = diamondSquare.GenerateHeightMap(N, SEED);
