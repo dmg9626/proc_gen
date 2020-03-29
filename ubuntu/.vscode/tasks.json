@@ -37,6 +37,7 @@
             "label": "create build folder",
             "command": "/usr/bin/mkdir",
             "args": [
+                "-p",
                 "out/"
             ]
         }
