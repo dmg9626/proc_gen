@@ -92,14 +92,13 @@ void TerrainPass::AddSand(TileMap* tilemap)
 				continue;
 
 			// If land tile is bordering water, change it to sand
-			if (CountNeighborsOfType(x, y, tilemap, WATER_TILE)) {
+			if (HasNeighborsOfType(x, y, tilemap, WATER_TILE)) {
 				tilemap->SetTileAt(x, y, SAND_TILE);
 			}
 		}
 	}
 }
 
-// TODO: pass seed to this method
 void TerrainPass::PopulateTrees(TileMap* terrainLayer, TileMap* objectLayer, float treeRatio)
 {
 	// Iterate over each tile in terrain layer
@@ -107,8 +106,8 @@ void TerrainPass::PopulateTrees(TileMap* terrainLayer, TileMap* objectLayer, flo
 		for (int x = 0; x < terrainLayer->size; x++) {
 			int tile = terrainLayer->GetTileAt(x, y);
 
-			// Skip if tile isn't specified type
-			if (tile != LAND_TILE)
+			// Only place trees on land tiles that with no adjacent trees
+			if (tile != LAND_TILE || HasNeighborsOfType(x, y, objectLayer, TREE_TILE))
 				continue;
 
 			// Randomly place trees on objectLayer based on treeRatio chance
