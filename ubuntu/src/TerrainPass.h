@@ -18,6 +18,9 @@ public:
 	/* Populates land with trees (amount corresponding to treeRatio between 0-1)*/
 	void PopulateTrees(TileMap * terrainLayer, TileMap* objectLayer, float treeRatio);
 private:
+	/* Returns how many tiles of given type surround tile at (x,y) */
+	int CountNeighborsOfType(int x, int y, TileMap* tilemap, int tile_type);
+
 	/* Returns true if tile at (x,y) has neighbors of the given type */
 	bool HasNeighborsOfType(int x, int y, TileMap* tilemap, int tile_type);
 
