@@ -12,7 +12,7 @@ using namespace	xmlw;
 // Determines size of map
 int N = 5;
 
-// Seed used when none provided in args
+// Random seed used when none provided in args
 int DEFAULT_SEED = time(0);
 
 // Pixel size of tiles found in graphics sprite sheet
@@ -24,8 +24,8 @@ float WATER_RATIO = .55f;
 // Frequency of trees populated in map
 float TREE_RATIO = .1f;
 
-void CreateMapXML(int width, int height, TileMap * terrainLayer, TileMap* objectLayer);
-void CreateGameXML(int playerX, int playerY, TileMap* tilemap, string gameName);
+void CreateMapXML(string mapName, int width, int height, TileMap * terrainLayer, TileMap* objectLayer);
+void CreateGameXML(string gameName, int playerX, int playerY, TileMap* tilemap);
 
 int main(int argc, char *argv[])
 {
@@ -76,13 +76,13 @@ int main(int argc, char *argv[])
     }
 
     // Write map/game data to xml
-    CreateMapXML(size, size, terrainLayer, objectLayer);
-    CreateGameXML(player_x, player_y, terrainLayer, "The Beach");
+    CreateMapXML("my_map", size, size, terrainLayer, objectLayer);
+    CreateGameXML("The Beach", player_x, player_y, terrainLayer);
 }
 
-void CreateMapXML(int width, int height, TileMap * terrainLayer, TileMap* objectLayer)
+void CreateMapXML(string mapName, int width, int height, TileMap * terrainLayer, TileMap* objectLayer)
 {
-    ofstream f("my_map.xml");
+    ofstream f(mapName + ".xml");
     XmlStream xml(f);
 
     // <map> root tag (endtag() called by destructor)
@@ -103,6 +103,7 @@ void CreateMapXML(int width, int height, TileMap * terrainLayer, TileMap* object
         << tag("image") << attr("source") << "graphics.png" << attr("width") << 320 << attr("height") << 1184
     << endtag("tileset");
 
+    // TERRAIN LAYER
     // <layer> -> <data> tag holding tile data
     xml << tag("layer") << attr("name") << "Terrain Layer" << attr("width") << width << attr("height") << height;
     xml << tag("data");
@@ -116,21 +117,24 @@ void CreateMapXML(int width, int height, TileMap * terrainLayer, TileMap* object
     }
     xml << endtag("layer");
 
+    // OBJECT LAYER
     // <layer> -> <data> tag holding tile data
-    xml << tag("layer") << attr("name") << "Object Layer" << attr("width") << width << attr("height") << height;
-    xml << tag("data");
+    if(objectLayer != nullptr) {
+        xml << tag("layer") << attr("name") << "Object Layer" << attr("width") << width << attr("height") << height;
+        xml << tag("data");
 
-    // Populate <data> with tiles
-    for (int y = 0; y < height; y++) {
-        for (int x = 0; x < width; x++) {
-            // Insert tile values from tilemap
-            xml << tag("tile") << attr("gid") << objectLayer->GetTileAt(x, y) << endtag();
+        // Populate <data> with tiles
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                // Insert tile values from tilemap
+                xml << tag("tile") << attr("gid") << objectLayer->GetTileAt(x, y) << endtag();
+            }
         }
+        xml << endtag("layer");
     }
-    xml << endtag("layer");
 }
 
-void CreateGameXML(int playerX, int playerY, TileMap* tilemap, string gameName)
+void CreateGameXML(string gameName, int playerX, int playerY, TileMap* tilemap)
 {
     ofstream f("my_game.xml");
     XmlStream xml(f);
